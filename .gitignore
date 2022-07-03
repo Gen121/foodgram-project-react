@@ -130,3 +130,7 @@ dmypy.json
 
 # .idea
 .idea
+
+# Own ignored files/directories
+.vscode
+requirements_dev.txt
