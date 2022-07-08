@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'debug_toolbar',
     'users.apps.UsersConfig',
 ]
 
@@ -44,6 +45,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE += (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'debug_toolbar_force.middleware.ForceDebugToolbarMiddleware',
+)
+
+INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'backend.urls'
 
