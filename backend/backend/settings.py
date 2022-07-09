@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'djoser',
     'debug_toolbar',
     'users.apps.UsersConfig',
+    'recipes.apps.RecipesConfig',
 ]
 
 MIDDLEWARE = [
