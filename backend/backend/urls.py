@@ -11,6 +11,7 @@ urlpatterns = [
          name='redoc'),
     path('api/', include('users.urls')),
     path('api/', include('recipes.urls')),
+    path('api/', include('shopping_card.urls'))
 ]
 
 if DEBUG:
