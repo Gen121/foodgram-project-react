@@ -1,0 +1,40 @@
+#### Создание суперАдмина ####
+
+echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'q@q.ru', 'admin')" | python manage.py shell
+
+?debug-toolbar
+
+
+
+
+#### Стандартные команды Джанго ####
+
+python3 manage.py makemigrations
+
+python3 manage.py migrate
+
+python3 manage.py collectstatic
+
+python3 manage.py shell -i ipython
+
+python3 manage.py runserver
+
+python3 manage.py -h
+
+
+
+
+#### VENV commands ####
+
+source ../venv/bin/activate
+
+pip install -r requirements.txt
+pip install -r requirements_dev.txt
+
+
+
+
+#### Django shall command #####
+
+from recipes.models import *
+
