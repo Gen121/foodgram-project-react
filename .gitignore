@@ -134,3 +134,5 @@ dmypy.json
 # Own ignored files/directories
 .vscode
 requirements_dev.txt
+CMD.txt
+migrations/
