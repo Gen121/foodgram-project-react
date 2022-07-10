@@ -34,5 +34,5 @@ def create_profile_handler(sender, instance, created, **kwargs) -> None:
     if not created:
         return
     # Create the profile object, only if it is newly created
-    shoping_cart = ShoppingCart(user=instance)
+    shoping_cart = ShoppingCart(buyer=instance)
     shoping_cart.save()
