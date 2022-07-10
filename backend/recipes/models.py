@@ -10,7 +10,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         'Tag',
         related_name='recipes',
-        null=True, )
+        )
 
     author = models.ForeignKey(
         User,
@@ -20,7 +20,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         'Ingredient',
         related_name='recipes',
-        through='RecipeIngredient',
+        through='IngredientInRecipe',
         through_fields=('recipe', 'ingredient'), )
 
     image = models.ImageField(  # in min_recipie
@@ -39,9 +39,6 @@ class Recipe(models.Model):
     # TODO: carts
 
     class Meta:
-        ordering = ['-created_at']
-        verbose_name_plural = 'Recipes'
-        verbose_name = 'Recipe'
         ordering = ['-pub_date']
         # constraints = [
         #     models.UniqueConstraint(

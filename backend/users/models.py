@@ -23,15 +23,15 @@ class Profile(models.Model):
         'recipes.Recipe',
         related_name='favorited_by',
         blank=True, )
-    cart = models.OneToOneField(
-        'cart.Cart',
-        related_name='user_profile',
-        on_delete=models.CASCADE,
-    )
+    # cart = models.OneToOneField(
+    #     'shopping_cart.ShoppingCart',
+    #     related_name='user_profile',
+    #     on_delete=models.CASCADE,
+    # )
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)  # <- И тут тоже
-def create_profile_handler(sender, instance, created, **kwargs):
+def create_profile_handler(sender, instance, created, **kwargs) -> None:
     if not created:
         return
     # Create the profile object, only if it is newly created
