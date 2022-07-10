@@ -1,9 +1,9 @@
 from django.shortcuts import HttpResponse, get_object_or_404
 
-from .models import Parent
+# from .models import Parent
 
 
 def index(request):
-    p = get_object_or_404(Parent, slug='adam').slug
+    # p = get_object_or_404(Parent, slug='adam').slug
     return HttpResponse(
-        f'{p}')
+        f'{1+1}')
