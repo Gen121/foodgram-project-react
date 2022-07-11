@@ -137,3 +137,4 @@ requirements_dev.txt
 .txt
 .gitignore
 migrations/
+backend/images/
