@@ -1,4 +1,4 @@
-from rest_framework import mixins
+from rest_framework import mixins, viewsets
 
 from users.models import User
 from api.serializers import UserSerializer
