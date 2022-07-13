@@ -1,5 +1,5 @@
 
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 # from django.urls import reverse
@@ -12,7 +12,7 @@ class Recipe(models.Model):
         'Tag',
         related_name='recipes', )
     author = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='recipes', )
     ingredients = models.ManyToManyField(
