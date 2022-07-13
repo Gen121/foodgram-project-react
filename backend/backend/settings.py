@@ -147,3 +147,9 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+DJOSER = {
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.AllowAny'],
+    },
+    'HIDE_USERS': False,
+}
