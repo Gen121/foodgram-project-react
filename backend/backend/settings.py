@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
-    'shopping_cart.apps.ShoppingCartConfig',
     'api.apps.ApiConfig',
 ]
 
@@ -92,6 +91,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = 'users.User'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -145,3 +146,4 @@ REST_FRAMEWORK = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
