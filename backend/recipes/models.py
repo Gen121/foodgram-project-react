@@ -45,9 +45,12 @@ class Recipe(models.Model):
     #     return bool(request.user.profile.favorites.filter(id=self.id).exists())  # TODO: Select_related?
 
     def is_favored(self, request):
-        return bool(
-            request.user.select_related(
-                'profile').favorites.filter(id=self.id).exists())  # TODO: Select_related?
+        return bool(request.user.select_related(
+            'profile').is_recipe_in_favorited(self.id))
+
+    def is_in_shopping_cart(self, request):
+        return bool(request.user.select_related(
+            'profile').is_recipe_in_shopping_cart(self.id))
 
 
 class Ingredient(models.Model):
