@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
-# from django.urls import reverse
 
 
 class Recipe(models.Model):
@@ -42,8 +41,13 @@ class Recipe(models.Model):
     def __str__(self):
         return f'Рецепт {self.name} от {self.author}'
 
-    # def get_absolute_url(self):
-    #     return reverse('recipes:recipe_detail', kwargs={'pk': self.pk}, )
+    # def is_favored(self, request):
+    #     return bool(request.user.profile.favorites.filter(id=self.id).exists())  # TODO: Select_related?
+
+    def is_favored(self, request):
+        return bool(
+            request.user.select_related(
+                'profile').favorites.filter(id=self.id).exists())  # TODO: Select_related?
 
 
 class Ingredient(models.Model):
@@ -59,9 +63,6 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name}: {self.measurement_unit}'
-
-    # def get_absolute_url(self):
-    #     return reverse('recipes:ingridient_detail', kwargs={'pk': self.pk}, )
 
 
 class IngredientInRecipe(models.Model):
@@ -85,11 +86,6 @@ class IngredientInRecipe(models.Model):
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}: {self.amount}'
 
-    # def get_absolute_url(self):
-    #     return reverse(
-    #         'recipes:ingridient_in_recipe_detail',
-    #         kwargs={'pk': self.pk}, )
-
 
 class Tag(models.Model):
     name = models.CharField(
@@ -111,8 +107,3 @@ class Tag(models.Model):
 
     def __str__(self):
         return f'#{self.slug}'
-
-    # def get_absolute_url(self):
-    #     return reverse(
-    #         'recipes:tag_detail',
-    #         kwargs={'pk': self.pk}, )
