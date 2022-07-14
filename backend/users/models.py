@@ -1,12 +1,14 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model  # импортнуть модель юзера так?
-# from django.contrib.auth.models import User  # <- в документации предлагают так
+from django.contrib.auth.models import AbstractUser  # <- в документации предлагают так
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 # from django.urls import reverse
 
-User = get_user_model()
+
+class User(AbstractUser):
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
 
 class Profile(models.Model):
@@ -24,6 +26,10 @@ class Profile(models.Model):
         'recipes.Recipe',
         related_name='favorited_by',
         blank=True, )
+    shopping_cart = models.ManyToManyField(
+        'recipes.Recipe',
+        related_name='in_shopping_cart',
+        blank=True, )
 
     class Meta:
         ordering = ['user', ]
@@ -33,13 +39,24 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username + '_profile'
 
-    # def get_absolute_url(self):
-    #     return reverse(
-    #         'users:profile_detail',
-    #         kwargs={'pk': self.pk}, )
+    def get_shopping_list(self):
+        q = self.recipes.ingredients.all()
+        shoping_list = dict()
+        for ingredient in q:
+            if ingredient.id not in shoping_list:
+                shoping_list[ingredient.id] = ingredient
+            else:
+                shoping_list[ingredient.id].amount += ingredient.amount
+        return list(shoping_list.values())
 
     def is_subscribed(self, user_id):
-        return bool(self.user.following.filter(id=user_id).exists())
+        return bool(self.following.filter(id=user_id).exists())
+
+    def is_recipe_in_favorited(self, recipe_id):
+        return bool(self.favorites.filter(id=recipe_id).exists())
+
+    def is_recipe_in_shopping_cart(self, recipe_id):
+        return bool(self.shopping_cart.filter(id=recipe_id).exists())
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)  # <- И тут тоже

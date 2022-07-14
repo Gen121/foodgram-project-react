@@ -22,25 +22,3 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount', )
-
-
-class RetrieveRecipeSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True, read_only=True)
-    author = UserSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients',
-                  'name', 'description', )
-
-    @property
-    def get_author(self):
-        return self.context['request'].user
-
-    @property
-    def get_recipe_id(self):
-        return self.context['request'].parser_context['kwargs']['pk']
-
-    def get_is_favorited(self, recipe):
-        return recipe.is_favored(self.get_author)
