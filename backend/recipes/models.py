@@ -36,7 +36,7 @@ class Recipe(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('author', 'name', ),
-                name='unique_review', ), ]
+                name='unique_recipe_name', ), ]
 
     def __str__(self):
         return f'Рецепт {self.name} от {self.author}'
