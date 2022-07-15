@@ -5,7 +5,36 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import Profile, User
 
-admin.site.register(Profile)
+
+class FollowingInline(admin.TabularInline):
+    model = Profile.following.through
+    extra = 0
+    fk_name = 'to_profile'
+    verbose_name = 'Аккаунт в подписки'
+    verbose_name_plural = 'Подписки'
+
+
+
+class FavoritesInline(admin.TabularInline):
+    model = Profile.favorites.through
+    extra = 0
+    fk_name = 'profile'
+    verbose_name = 'Рецепт'
+    verbose_name_plural = 'Избранное'
+
+
+class ShoppingCartInline(admin.TabularInline):
+    model = Profile.shopping_cart.through
+    extra = 0
+    fk_name = 'profile'
+    verbose_name = 'Продукт'
+    verbose_name_plural = 'Корзина'
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    fields = ('user', )
+    inlines = [FollowingInline, FavoritesInline, ShoppingCartInline]
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -14,7 +43,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = UserCreationForm.Meta.model
         fields = '__all__'
         field_classes = UserCreationForm.Meta.field_classes
-
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
@@ -29,5 +57,4 @@ class UserAdmin(BaseUserAdmin):
             'groups', 'user_permissions'),
         }),
         (_('Important dates'), {'fields': (
-            'last_login', 'date_joined')}),
-    )
+            'last_login', 'date_joined')}), )
