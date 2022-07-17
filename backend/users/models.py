@@ -57,7 +57,7 @@ class Profile(models.Model):
         return bool(self.shopping_cart.filter(id=recipe_id).exists())
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)  # <- И тут тоже
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile_handler(sender, instance, created, **kwargs) -> None:
     if not created:
         return
