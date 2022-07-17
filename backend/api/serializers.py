@@ -2,7 +2,7 @@ import enum
 
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserSerializer as BaseUserSerializer
 
 from recipes.models import Ingredient, Recipe, IngredientInRecipe, Tag
 
@@ -14,6 +14,21 @@ class Enum(enum.Enum):
     @classmethod
     def choices(cls):
         return tuple((e.value, e.name) for e in cls)
+
+
+class UserSerializer(BaseUserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
+    class Meta(BaseUserSerializer.Meta):
+        fields = BaseUserSerializer.Meta.fields + ('is_subscribed', )
+
+    def get_is_subscribed(self, obj):
+        try:
+            self.context['request'].user.is_authenticated
+            return self.context['request'].user.select_relaed(
+                'profile').is_subscribed(obj.id)
+        except AttributeError:
+            return False
 
 
 class TagSerializer(serializers.ModelSerializer):
