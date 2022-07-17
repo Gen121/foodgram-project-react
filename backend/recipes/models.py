@@ -35,21 +35,13 @@ class Recipe(models.Model):
     def __str__(self):
         return f'Рецепт {self.name} от {self.author}'
 
-    def is_favorited(self, request):  # TODO: перенести трай в сериализатор
-        try:
-            request.user.is_authenticated
-            return bool(request.user.select_related(
-                'profile').is_recipe_in_favorited(self.id))
-        except AttributeError:
-            return False
+    def is_favorited(self, request):
+        return bool(request.user.select_related(
+            'profile').is_recipe_in_favorited(self.id))
 
-    def is_in_shopping_cart(self, request):  # TODO: перенести трай в сериализатор
-        try:
-            request.user.is_authenticated
-            return bool(request.user.select_related(
-                'profile').is_recipe_in_shopping_cart(self.id))
-        except AttributeError:
-            return False
+    def is_in_shopping_cart(self, request):
+        return bool(request.user.select_related(
+            'profile').is_recipe_in_shopping_cart(self.id))
 
 
 class Ingredient(models.Model):
@@ -74,7 +66,7 @@ class IngredientInRecipe(models.Model):
         on_delete=models.CASCADE, )
     ingredient = models.ForeignKey(
         'recipes.Ingredient',
-        related_name='Ingredients',
+        related_name='ingredients',
         on_delete=models.CASCADE, )
     amount = models.IntegerField(validators=[MinValueValidator(1), ], )
 
