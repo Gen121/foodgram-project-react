@@ -1,10 +1,8 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model  # импортнуть модель юзера так?
-from django.contrib.auth.models import AbstractUser  # <- в документации предлагают так
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-# from django.urls import reverse
 
 
 class User(AbstractUser):
@@ -13,8 +11,8 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,  # <- Возможно следует использовать тут get_user_model(),
-        primary_key=True,          # или класс User а не settings.AUTH_USER_MODEL ???
+        settings.AUTH_USER_MODEL,
+        primary_key=True,
         related_name='profile',
         on_delete=models.CASCADE, )
     following = models.ManyToManyField(
@@ -63,6 +61,5 @@ class Profile(models.Model):
 def create_profile_handler(sender, instance, created, **kwargs) -> None:
     if not created:
         return
-    # Create the profile object, only if it is newly created
     profile = Profile(user=instance)
     profile.save()

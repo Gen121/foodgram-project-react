@@ -13,11 +13,6 @@ class Recipe(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='recipes', )
-    # ingredients = models.ManyToManyField(
-    #     'Ingredient',
-    #     related_name='recipes',
-    #     through='IngredientInRecipe',
-    #     through_fields=('recipe', 'ingredient', ), )
     image = models.ImageField(  # in min_recipie
         upload_to='images/',
         default='images/None/no-img.jpg', )
@@ -40,10 +35,7 @@ class Recipe(models.Model):
     def __str__(self):
         return f'Рецепт {self.name} от {self.author}'
 
-    # def is_favored(self, request):
-    #     return bool(request.user.profile.favorites.filter(id=self.id).exists())  # TODO: Select_related?
-
-    def is_favorited(self, request):
+    def is_favorited(self, request):  # TODO: перенести трай в сериализатор
         try:
             request.user.is_authenticated
             return bool(request.user.select_related(
@@ -51,7 +43,7 @@ class Recipe(models.Model):
         except AttributeError:
             return False
 
-    def is_in_shopping_cart(self, request):
+    def is_in_shopping_cart(self, request):  # TODO: перенести трай в сериализатор
         try:
             request.user.is_authenticated
             return bool(request.user.select_related(
@@ -80,22 +72,19 @@ class IngredientInRecipe(models.Model):
         'recipes.Recipe',
         related_name='recipes',
         on_delete=models.CASCADE, )
-
     ingredient = models.ForeignKey(
         'recipes.Ingredient',
         related_name='Ingredients',
-        on_delete=models.CASCADE, )  # TODO продумать сценарии удаления
-
+        on_delete=models.CASCADE, )
     amount = models.IntegerField(validators=[MinValueValidator(1), ], )
 
     class Meta:
         ordering = ['recipe', 'ingredient', ]
         verbose_name = 'ингредиент в рецепте'
         verbose_name_plural = 'ингредиенты в рецептах'
-
-        # constraints = [  #TODO: реализовать
-        #     models.UniqueConstraint(
-        #         fields=['recipe', 'ingredient'], name='unique_ingredient'), ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'], name='unique_ingredient'), ]
 
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}: {self.amount}'
@@ -108,7 +97,6 @@ class Tag(models.Model):
         null=True,
         max_length=7,
         validators=[RegexValidator(r'^#(?:[0-9a-fA-F]{3}){1,2}$'), ], )
-
     slug = models.SlugField(
         max_length=200,
         unique=True,
