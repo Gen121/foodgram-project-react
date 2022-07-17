@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
@@ -14,11 +13,11 @@ class Recipe(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='recipes', )
-    ingredients = models.ManyToManyField(
-        'Ingredient',
-        related_name='recipes',
-        through='IngredientInRecipe',
-        through_fields=('recipe', 'ingredient', ), )
+    # ingredients = models.ManyToManyField(
+    #     'Ingredient',
+    #     related_name='recipes',
+    #     through='IngredientInRecipe',
+    #     through_fields=('recipe', 'ingredient', ), )
     image = models.ImageField(  # in min_recipie
         upload_to='images/',
         default='images/None/no-img.jpg', )
@@ -44,13 +43,21 @@ class Recipe(models.Model):
     # def is_favored(self, request):
     #     return bool(request.user.profile.favorites.filter(id=self.id).exists())  # TODO: Select_related?
 
-    def is_favored(self, request):
-        return bool(request.user.select_related(
-            'profile').is_recipe_in_favorited(self.id))
+    def is_favorited(self, request):
+        try:
+            request.user.is_authenticated
+            return bool(request.user.select_related(
+                'profile').is_recipe_in_favorited(self.id))
+        except AttributeError:
+            return False
 
     def is_in_shopping_cart(self, request):
-        return bool(request.user.select_related(
-            'profile').is_recipe_in_shopping_cart(self.id))
+        try:
+            request.user.is_authenticated
+            return bool(request.user.select_related(
+                'profile').is_recipe_in_shopping_cart(self.id))
+        except AttributeError:
+            return False
 
 
 class Ingredient(models.Model):
@@ -85,6 +92,10 @@ class IngredientInRecipe(models.Model):
         ordering = ['recipe', 'ingredient', ]
         verbose_name = 'ингредиент в рецепте'
         verbose_name_plural = 'ингредиенты в рецептах'
+
+        # constraints = [  #TODO: реализовать
+        #     models.UniqueConstraint(
+        #         fields=['recipe', 'ingredient'], name='unique_ingredient'), ]
 
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}: {self.amount}'
