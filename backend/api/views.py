@@ -28,7 +28,7 @@ class IngredientInRecipeViewSet(ListRetrieveViewSet):
 
 
 class RecipeViewSet(mixins.ListModelMixin,
-                    # mixins.RetrieveModelMixin,
+                    mixins.RetrieveModelMixin,
                     # mixins.CreateModelMixin,
                     # mixins.UpdateModelMixin,
                     # mixins.DestroyModelMixin,Z
