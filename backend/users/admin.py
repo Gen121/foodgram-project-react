@@ -3,20 +3,19 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Profile, User
+from .models import Favorite, Follow, Profile, ShoppingCart, User
 
 
 class FollowingInline(admin.TabularInline):
-    model = Profile.following.through
+    model = Follow
     extra = 0
-    fk_name = 'to_profile'
+    fk_name = 'profile'
     verbose_name = 'Аккаунт в подписки'
     verbose_name_plural = 'Подписки'
 
 
-
 class FavoritesInline(admin.TabularInline):
-    model = Profile.favorites.through
+    model = Favorite
     extra = 0
     fk_name = 'profile'
     verbose_name = 'Рецепт'
@@ -24,10 +23,10 @@ class FavoritesInline(admin.TabularInline):
 
 
 class ShoppingCartInline(admin.TabularInline):
-    model = Profile.shopping_cart.through
+    model = ShoppingCart
     extra = 0
     fk_name = 'profile'
-    verbose_name = 'Продукт'
+    verbose_name = 'Список продуктов'
     verbose_name_plural = 'Корзина'
 
 
