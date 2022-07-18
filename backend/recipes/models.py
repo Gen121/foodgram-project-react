@@ -10,7 +10,7 @@ class Recipe(models.Model):
         'Tag',
         related_name='recipes', )
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        'users.Profile',
         on_delete=models.CASCADE,
         related_name='recipes', )
     image = models.ImageField(  # in min_recipie
@@ -62,11 +62,11 @@ class Ingredient(models.Model):
 class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         'recipes.Recipe',
-        related_name='recipes',
+        related_name='ingredients',
         on_delete=models.CASCADE, )
     ingredient = models.ForeignKey(
         'recipes.Ingredient',
-        related_name='ingredients',
+        related_name='recipes',
         on_delete=models.CASCADE, )
     amount = models.IntegerField(validators=[MinValueValidator(1), ], )
 
