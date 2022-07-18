@@ -1,9 +1,10 @@
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework import mixins, viewsets
 
-from api.serializers import (IngredientInRecipeSerializer,
-                             IngredientSerializer, RecipeSerializer,
-                             TagSerializer)
+from users.models import User
+from api.serializers import (IngredientInRecipeGetSerializer,
+                             IngredientSerializer, RecipeGetSerializer,
+                             RecipePostSerializer, TagSerializer)
 
 
 class ListRetrieveViewSet(mixins.ListModelMixin,
@@ -24,23 +25,27 @@ class IngredientViewSet(ListRetrieveViewSet):
 
 class IngredientInRecipeViewSet(ListRetrieveViewSet):
     queryset = IngredientInRecipe.objects.all()
-    serializer_class = IngredientInRecipeSerializer
+    serializer_class = IngredientInRecipeGetSerializer
 
 
 class RecipeViewSet(mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
-                    # mixins.CreateModelMixin,
-                    # mixins.UpdateModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.UpdateModelMixin,
                     # mixins.DestroyModelMixin,Z
                     viewsets.GenericViewSet, ):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    queryset = Recipe.objects.prefetch_related('ingredients').all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeGetSerializer
+        return RecipePostSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(author=User.objects.all().first().profile)
 
     def perform_update(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(author=User.objects.all().first().profile)
 
     def perform_destroy(self, instance):
         instance.delete()
