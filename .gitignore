@@ -138,3 +138,4 @@ requirements_dev.txt
 .gitignore
 migrations/
 backend/images/
+*.png
