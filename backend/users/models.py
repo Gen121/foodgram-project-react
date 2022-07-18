@@ -31,6 +31,11 @@ class Follow(models.Model):
     def __str__(self):
         return f'{self.profile} follow to {self.author}'
 
+    @classmethod
+    def is_subscribed(cls, profile_id, author_id):
+        return bool(
+            cls.objects.filter(profile=profile_id, author=author_id).exists())
+
 
 class Favorite(models.Model):
     profile = models.ForeignKey(
@@ -53,6 +58,11 @@ class Favorite(models.Model):
     def __str__(self):
         return f"{self.recipe} in {self.profile}'s favorites"
 
+    @classmethod
+    def is_in_favorite(cls, profile_id, recipe_id):
+        return bool(
+            cls.objects.filter(profile=profile_id, recipe=recipe_id).exists())
+
 
 class ShoppingCart(models.Model):
     profile = models.ForeignKey(
@@ -70,6 +80,11 @@ class ShoppingCart(models.Model):
 
     def __str__(self):
         return f"{self.recipe} in {self.profile}'s shopping cart"
+
+    @classmethod
+    def is_in_shopping_cart(cls, profile_id, recipe_id):
+        return bool(
+            cls.objects.filter(profile=profile_id, recipe=recipe_id).exists())
 
 
 class Profile(models.Model):
@@ -96,25 +111,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username + '_profile'
-
-    def get_shopping_list(self):
-        q = self.recipes.ingredients.all()
-        shoping_list = dict()
-        for ingredient in q:
-            if ingredient.id not in shoping_list:
-                shoping_list[ingredient.id] = ingredient
-            else:
-                shoping_list[ingredient.id].amount += ingredient.amount
-        return list(shoping_list.values())
-
-    def is_subscribed(self, user_id):
-        return bool(self.following.filter(id=user_id).exists())
-
-    def is_recipe_in_favorited(self, recipe_id):
-        return bool(self.favorites.filter(id=recipe_id).exists())
-
-    def is_recipe_in_shopping_cart(self, recipe_id):
-        return bool(self.shopping_cart.filter(id=recipe_id).exists())
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

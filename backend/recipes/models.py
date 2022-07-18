@@ -1,10 +1,9 @@
-from django.conf import settings
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 
 class Recipe(models.Model):
-    name = models.CharField(  # in min_recipie + id
+    name = models.CharField(
         max_length=200, )
     tags = models.ManyToManyField(
         'Tag',
@@ -13,12 +12,12 @@ class Recipe(models.Model):
         'users.Profile',
         on_delete=models.CASCADE,
         related_name='recipes', )
-    image = models.ImageField(  # in min_recipie
+    image = models.ImageField(
         upload_to='images/',
         default='images/None/no-img.jpg', )
     text = models.TextField(
         max_length=2048, )
-    cooking_time = models.IntegerField(  # in min_recipie
+    cooking_time = models.IntegerField(
         validators=[MinValueValidator(1), ], )
     pub_date = models.DateTimeField(
         auto_now_add=True, )
@@ -34,14 +33,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return f'Рецепт {self.name} от {self.author}'
-
-    def is_favorited(self, request):
-        return bool(request.user.select_related(
-            'profile').is_recipe_in_favorited(self.id))
-
-    def is_in_shopping_cart(self, request):
-        return bool(request.user.select_related(
-            'profile').is_recipe_in_shopping_cart(self.id))
 
 
 class Ingredient(models.Model):
