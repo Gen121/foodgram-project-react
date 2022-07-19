@@ -32,8 +32,22 @@ class ShoppingCartInline(admin.TabularInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    fields = ('user', )
+    list_display = ('user', 'recipes_count', 'following_count',
+                    'followers_count', 'favorites_count', )
     inlines = [FollowingInline, FavoritesInline, ShoppingCartInline]
+    ordering = ('user', )
+
+    def recipes_count(self, obj):
+        return obj.recipes.count()
+
+    def following_count(self, obj):
+        return obj.following.count()
+
+    def followers_count(self, obj):
+        return obj.followers.count()
+
+    def favorites_count(self, obj):
+        return obj.favorites.count()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -42,6 +56,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = UserCreationForm.Meta.model
         fields = '__all__'
         field_classes = UserCreationForm.Meta.field_classes
+
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
@@ -57,3 +72,33 @@ class UserAdmin(BaseUserAdmin):
         }),
         (_('Important dates'), {'fields': (
             'last_login', 'date_joined')}), )
+    search_fields = ('username', )
+    list_filter = ('username', 'email', )
+    empty_value_display = '-пусто-'
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'recipe', )
+    search_fields = ('profile', 'recipe', )
+    list_filter = ('profile', 'recipe', )
+    ordering = ('profile', )
+    empty_value_display = '-пусто-'
+
+
+@admin.register(Follow)
+class FollowAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'author', )
+    search_fields = ('profile', 'author', )
+    list_filter = ('profile', 'author', )
+    empty_value_display = '-пусто-'
+    ordering = ('profile', )
+
+
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    list_display = ('profile', 'recipe', )
+    search_fields = ('profile', 'recipe', )
+    list_filter = ('profile', 'recipe', )
+    empty_value_display = '-пусто-'
+    ordering = ('profile', )

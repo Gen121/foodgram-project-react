@@ -37,9 +37,11 @@ class Recipe(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(
-        max_length=200, )
+        max_length=200,
+        verbose_name='Ингредиент', )
     measurement_unit = models.CharField(
-        max_length=200, )
+        max_length=200,
+        verbose_name='Единица измерения', )
 
     class Meta:
         ordering = ['name', ]
@@ -54,11 +56,13 @@ class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         'recipes.Recipe',
         related_name='ingredients',
-        on_delete=models.CASCADE, )
+        on_delete=models.CASCADE,
+        verbose_name='рецепт', )
     ingredient = models.ForeignKey(
         'recipes.Ingredient',
         related_name='recipes',
-        on_delete=models.CASCADE, )
+        on_delete=models.CASCADE,
+        verbose_name='ингредиент', )
     amount = models.IntegerField(validators=[MinValueValidator(1), ], )
 
     class Meta:

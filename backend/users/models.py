@@ -92,17 +92,20 @@ class Profile(models.Model):
         settings.AUTH_USER_MODEL,
         primary_key=True,
         related_name='profile',
-        on_delete=models.CASCADE, )
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь', )
     favorites = models.ManyToManyField(
         'recipes.Recipe',
         related_name='in_favorites_by',
         through='Favorite',
-        blank=True, )
+        blank=True,
+        verbose_name='Избранные рецепты', )
     shopping_cart = models.ManyToManyField(
         'recipes.Recipe',
         related_name='in_shopping_cart_by',
         through='ShoppingCart',
-        blank=True, )
+        blank=True,
+        verbose_name='Список покупок', )
 
     class Meta:
         ordering = ['user', ]
