@@ -16,7 +16,7 @@ class Command(BaseCommand):
         }
 
     def handle(self, *args, **kwargs):
-        os.chdir(os.path.join('..', 'data'))
+        os.chdir(os.path.join('data'))
         for key in self.csv_model:
             with open(key, encoding='utf-8') as r_file:
                 file_reader = csv.reader(r_file, delimiter=',')
