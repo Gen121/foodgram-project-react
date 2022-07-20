@@ -8,7 +8,7 @@ pytest-pythonpath==0.7.3
 djangorestframework-simplejwt==4.8.0
 django-filter==21.1
 python-dotenv==0.20.0
-drf-extra-fields3.4.0
+drf-extra-fields==3.4.0
 psycopg2-binary==2.8.6
 gunicorn==20.0.4
 djoser==2.1.0
