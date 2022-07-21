@@ -11,20 +11,21 @@ services:
 
 
   db:
+    container_name: db
     image: postgres:13.0-alpine
     volumes:
       - postgresql:/var/lib/postgresql/data/
     env_file:
       - ./.env
 
-  
+
   backend:
     build:
       context: ../backend
       dockerfile: Dockerfile
-      
+
     # image: penguinw/foodgram:latest
-    
+
     restart: always
     volumes:
       - static_value:/app/static/
@@ -34,15 +35,18 @@ services:
       - db
     env_file:
       - ./.env
+    # command: 
+    #   - python3 manage.py collectstatic --noinput
 
-  
+
+
   frontend:
     build:
       context: ../frontend
       dockerfile: Dockerfile
-      
+
     # image: penguinw/foodgram_frontend:v1
-    
+
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
