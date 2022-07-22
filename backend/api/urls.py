@@ -1,7 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
-
-from api.views import IngredientViewSet, RecipeViewSet, TagViewSet, UserViewSet
+from djoser import views
+from api.views import (IngredientViewSet, RecipeViewSet, TagViewSet,
+                       CustomUserViewSet)
 
 app_name = 'api'
 
@@ -18,7 +19,7 @@ router.register('recipes', RecipeViewSet, basename='recipes')
 router.register(r'recipes/(?P<recipe_id>[0-9]+)',
                 RecipeViewSet, basename='recipe_detail')
 
-router.register('users', UserViewSet, basename='users')
+router.register('users', CustomUserViewSet, basename='users')
 
 
 urlpatterns = [

@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
+from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -24,12 +25,15 @@ class ListRetrieveViewSet(mixins.ListModelMixin,
     pass
 
 
-class UsersViewSet(UserViewSet):
+class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     pagination_class = PagePagination
 
     def get_serializer_class(self):
-        if self.action == 'subscribe':
+        action = self.action
+        if action == 'create':
+            return UserCreateSerializer
+        if action == 'subscribe':
             return FollowSerializer
         return CustomUserSerializer
 
@@ -41,7 +45,7 @@ class UsersViewSet(UserViewSet):
 
     @action(detail=False, permission_classes=[IsAuthenticated], )
     def subscriptions(self, request):
-        queryset = Follow.objects.filter(profile=request.user.profile)
+        queryset = Follow.objects.filter(user=request.user)
         page = self.paginate_queryset(queryset)
         serializer = FollowSerializer(
             page,
@@ -91,10 +95,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipePostSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user.profile)
+        serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(author=self.request.user.profile)
+        serializer.save(author=self.request.user)
 
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated])

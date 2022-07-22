@@ -31,12 +31,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
+    'django_filters',
     # 'debug_toolbar',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
-]
+    'djoser',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,24 +81,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE',
-                            default='django.db.backends.postgresql'),
-        'NAME': os.getenv('POSTGRES_DB', default='postgres'),
-        'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': os.getenv('DB_HOST', default='db'),
-        'PORT': os.getenv('DB_PORT', default='5432')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.getenv('DB_ENGINE',
+#                             default='django.db.backends.postgresql'),
+#         'NAME': os.getenv('POSTGRES_DB', default='postgres'),
+#         'USER': os.getenv('POSTGRES_USER', default='postgres'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+#         'HOST': os.getenv('DB_HOST', default='db'),
+#         'PORT': os.getenv('DB_PORT', default='5432')
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -123,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = 'en'  #TODO : ru-Ru
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -152,6 +153,9 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
@@ -163,9 +167,9 @@ DJOSER = {
         'user': ['rest_framework.permissions.AllowAny'],
     },
     'SERIALIZERS': {
-        'user': 'api.serializers.UserSerializer',
-        'current_user': 'api.serializers.UserSerializer',
-        'user_create': 'api.serializers.UserSerializer',
+        'user': 'api.serializers.CustomUserSerializer',
+        'user_list': 'api.serializers.CustomUserSerializer',
+        'current_user': 'api.serializers.CustomUserSerializer',
     },
     'HIDE_USERS': False,
 }

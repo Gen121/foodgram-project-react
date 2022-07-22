@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
-from users.models import Profile, User
 
 
 class RecipeIngredientsInline(admin.TabularInline):
@@ -23,7 +22,7 @@ class TagInline(admin.TabularInline):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    fields = ('name', 'text', 'image', 'author', 'cooking_time', 'tags', )
+    fields = ('name', 'text', 'image', 'author', 'cooking_time',)
     inlines = [RecipeIngredientsInline, TagInline, ]
     search_fields = ('author', 'name',)
     list_filter = ('author', 'name', 'tags', )

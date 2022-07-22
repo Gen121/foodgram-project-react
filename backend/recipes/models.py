@@ -9,7 +9,7 @@ class Recipe(models.Model):
         'Tag',
         related_name='recipes', )
     author = models.ForeignKey(
-        'users.Profile',
+        'users.User',
         on_delete=models.CASCADE,
         related_name='recipes', )
     image = models.ImageField(

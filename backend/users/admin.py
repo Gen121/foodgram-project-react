@@ -3,13 +3,13 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Favorite, Follow, Profile, ShoppingCart, User
+from .models import Favorite, Follow, ShoppingCart, User
 
 
 class FollowingInline(admin.TabularInline):
     model = Follow
     extra = 0
-    fk_name = 'profile'
+    fk_name = 'user'
     verbose_name = 'Аккаунт в подписки'
     verbose_name_plural = 'Подписки'
 
@@ -17,7 +17,7 @@ class FollowingInline(admin.TabularInline):
 class FavoritesInline(admin.TabularInline):
     model = Favorite
     extra = 0
-    fk_name = 'profile'
+    fk_name = 'user'
     verbose_name = 'Рецепт'
     verbose_name_plural = 'Избранное'
 
@@ -25,29 +25,9 @@ class FavoritesInline(admin.TabularInline):
 class ShoppingCartInline(admin.TabularInline):
     model = ShoppingCart
     extra = 0
-    fk_name = 'profile'
+    fk_name = 'user'
     verbose_name = 'Список продуктов'
     verbose_name_plural = 'Корзина'
-
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipes_count', 'following_count',
-                    'followers_count', 'favorites_count', )
-    inlines = [FollowingInline, FavoritesInline, ShoppingCartInline]
-    ordering = ('user', )
-
-    def recipes_count(self, obj):
-        return obj.recipes.count()
-
-    def following_count(self, obj):
-        return obj.following.count()
-
-    def followers_count(self, obj):
-        return obj.followers.count()
-
-    def favorites_count(self, obj):
-        return obj.favorites.count()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -61,6 +41,7 @@ class CustomUserCreationForm(UserCreationForm):
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     add_form = CustomUserCreationForm
+    list_display = ('username', 'id', 'email', 'is_staff')
     add_fieldsets = (
         (None, {'fields': (
             'username', 'password1', 'password2')}),
@@ -72,6 +53,7 @@ class UserAdmin(BaseUserAdmin):
         }),
         (_('Important dates'), {'fields': (
             'last_login', 'date_joined')}), )
+    inlines = [FollowingInline, FavoritesInline, ShoppingCartInline]
     search_fields = ('username', )
     list_filter = ('username', 'email', )
     empty_value_display = '-пусто-'
@@ -79,26 +61,26 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'recipe', )
-    search_fields = ('profile', 'recipe', )
-    list_filter = ('profile', 'recipe', )
-    ordering = ('profile', )
+    list_display = ('user', 'recipe', )
+    search_fields = ('user', 'recipe', )
+    list_filter = ('user', 'recipe', )
+    ordering = ('user', )
     empty_value_display = '-пусто-'
 
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'author', )
-    search_fields = ('profile', 'author', )
-    list_filter = ('profile', 'author', )
+    list_display = ('user', 'author', )
+    search_fields = ('user', 'author', )
+    list_filter = ('user', 'author', )
     empty_value_display = '-пусто-'
-    ordering = ('profile', )
+    ordering = ('user', )
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'recipe', )
-    search_fields = ('profile', 'recipe', )
-    list_filter = ('profile', 'recipe', )
+    list_display = ('user', 'recipe', )
+    search_fields = ('user', 'recipe', )
+    list_filter = ('user', 'recipe', )
     empty_value_display = '-пусто-'
-    ordering = ('profile', )
+    ordering = ('user', )

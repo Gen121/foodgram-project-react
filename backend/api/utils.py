@@ -11,13 +11,13 @@ def data_for_funcs(request, obj, pk):
     recipe = get_object_or_404(Recipe, pk=recipe_pk)
     if request.method == 'POST':
         serializer = RecipeShortSerializer(recipe)
-        obj.objects.create(profile=request.user, recipe=recipe)
+        obj.objects.create(user=request.user, recipe=recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     elif request.method == 'DELETE':
         if obj.objects.filter(
-                profile=request.user.profile, recipe=recipe).exists():
+                user=request.user, recipe=recipe).exists():
             obj.objects.get(
-                profile=request.user.profile, recipe=recipe
+                user=request.user, recipe=recipe
                 ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
