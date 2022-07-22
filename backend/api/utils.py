@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from api.serializers import RecipeShortSerializer
 from recipes.models import IngredientInRecipe, Recipe
-
+from users.models import User, ShoppingCart
 
 def data_for_funcs(request, obj, pk):
     recipe_pk = pk
@@ -31,8 +31,11 @@ def data_for_funcs(request, obj, pk):
 def user_shopping_cart(user):
     shopping_cart = {}
     ingredients = IngredientInRecipe.objects.filter(
-        recipe__purchase__user=user).values_list(
-        'ingredients__name', 'amount', 'ingredients__measurement_unit')
+        recipe__in_shopping_cart_by=user).prefetch_related(
+            'ingredient', 'recipe').values_list(
+        'ingredient__name', 'amount', 'ingredient__measurement_unit')
+    print(ingredients)
+    pass
     if not ingredients:
         return None
     for ingredient in ingredients:
