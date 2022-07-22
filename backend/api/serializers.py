@@ -17,7 +17,7 @@ class CustomUserSerializer(UserSerializer):
         fields = ('id', 'username', 'email', 'first_name', 'last_name',
                   'is_subscribed', )
 
-    def get_is_subscribed(self, obj):  # TODO:
+    def get_is_subscribed(self, obj):
         if self.context['request'].user.is_anonymous:
             return False
         return Follow.is_subscribed(obj, self.context['request'].user)
@@ -129,7 +129,7 @@ class RecipePostSerializer(RecipeGetSerializer):
     def to_representation(self, instance):
         return RecipeGetSerializer(instance, context=self.context).data
 
-    def validate(self, data):  # TODO: добавить валидацию уникальности рецепта для автора
+    def validate(self, data):
         if data['name'] == '':
             raise ValidationError('Название рецепта не может быть пустым')
         ingridients = data['ingredients']
