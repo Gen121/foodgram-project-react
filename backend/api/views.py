@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from djoser.serializers import UserSerializer, UserCreateSerializer
+from djoser.serializers import UserCreateSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -10,12 +10,11 @@ from rest_framework.response import Response
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginations import PagePagination
 from api.serializers import (CustomUserSerializer, FollowSerializer,
-                             IngredientInRecipeGetSerializer,
                              IngredientSerializer, RecipeGetSerializer,
                              RecipePostSerializer, TagSerializer)
 from api.utils import data_for_funcs, user_shopping_cart
-from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
-from users.models import Follow, ShoppingCart, Favorite, User
+from recipes.models import Ingredient, Recipe, Tag
+from users.models import Favorite, Follow, ShoppingCart, User
 from users.permissions import IsAuthorOrReadOnly
 
 
