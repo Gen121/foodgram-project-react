@@ -113,16 +113,6 @@ class RecipePostSerializer(RecipeGetSerializer):
         model = Recipe
         fields = (
             'ingredients', 'tags', 'image', 'name', 'text', 'cooking_time', )
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Recipe.objects.all(),
-                fields=['recipe', 'author'],
-                message='Рецепт с таким названием уже существует.', ),
-            UniqueTogetherValidator(
-                queryset=IngredientInRecipe.objects.all(),
-                fields=['recipe', 'ingredient'],
-                message='Ингредиент с таким названием уже добавлен в рецепт', )
-        ]
 
     def to_representation(self, instance):
         return RecipeGetSerializer(instance, context=self.context).data
