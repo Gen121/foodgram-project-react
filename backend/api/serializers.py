@@ -93,15 +93,13 @@ class RecipeGetSerializer(RecipeShortSerializer):
         return self.context['request'].user
 
     def get_is_favorited(self, obj):
-        # request = self.context.get('request')
-        # if not request or request.user.is_anonymous:
-        #     return False
+        if self.context['request'].user.is_anonymous:
+            return False
         return Favorite.is_in_favorite(self.get_user.pk, obj.id)
 
     def get_is_in_shopping_cart(self, obj):
-        # request = self.context.get('request')
-        # if not request or request.user.is_anonymous:
-        #     return False
+        if self.context['request'].user.is_anonymous:
+            return False
         return ShoppingCart.is_in_shopping_cart(self.get_user.pk, obj.id)
 
 
