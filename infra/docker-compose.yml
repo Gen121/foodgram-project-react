@@ -8,8 +8,6 @@ volumes:
 
 
 services:
-
-
   db:
     container_name: db
     image: postgres:13.0-alpine
@@ -24,7 +22,6 @@ services:
       context: ../backend
       dockerfile: Dockerfile
 
-    # image: penguinw/foodgram:latest
 
     restart: always
     volumes:
@@ -35,9 +32,6 @@ services:
       - db
     env_file:
       - ./.env
-    # command: 
-    #   - python3 manage.py collectstatic --noinput
-
 
 
   frontend:
@@ -45,7 +39,6 @@ services:
       context: ../frontend
       dockerfile: Dockerfile
 
-    # image: penguinw/foodgram_frontend:v1
 
     volumes:
       - ../frontend/:/app/result_build/
@@ -66,4 +59,5 @@ services:
       - media_value:/var/html/media
     restart: always
     depends_on:
+      - backend
       - frontend
