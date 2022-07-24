@@ -6,7 +6,6 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from users.models import Favorite, Follow, ShoppingCart, User
-from users.validators import validate_username
 
 
 class CustomUserSerializer(UserSerializer):
@@ -21,13 +20,6 @@ class CustomUserSerializer(UserSerializer):
         if self.context['request'].user.is_anonymous:
             return False
         return Follow.is_subscribed(obj, self.context['request'].user)
-
-    def validate(self, attrs):
-        return super().validate(attrs)
-
-    def validate_username(self, username):
-        validate_username(username)
-        return username
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -135,11 +127,10 @@ class RecipePostSerializer(RecipeGetSerializer):
         return data
 
     def create_ingredients_in_recipe(self, recipe, ingredients):
-        for ingredient in ingredients:
-            IngredientInRecipe.objects.create(
-                recipe=recipe,
-                ingredient=ingredient['id'],
-                amount=ingredient['amount'], )
+        IngredientInRecipe.objects.bulk_create([IngredientInRecipe(
+            recipe=recipe,
+            ingredient=ingredient['id'],
+            amount=ingredient['amount'], ) for ingredient in ingredients])
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
