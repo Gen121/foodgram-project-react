@@ -54,7 +54,7 @@ class UserAdmin(BaseUserAdmin):
         (_('Important dates'), {'fields': (
             'last_login', 'date_joined')}), )
     inlines = [FollowingInline, FavoritesInline, ShoppingCartInline]
-    search_fields = ('username', )
+    search_fields = ('username', 'email')
     list_filter = ('username', 'email', )
     empty_value_display = '-пусто-'
 
