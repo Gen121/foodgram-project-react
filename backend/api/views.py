@@ -117,7 +117,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response('Список покупок пуст', status=status.HTTP_200_OK, )
         shopping_list = []
         for ingridient, value in shopping_cart.items():
-            shopping_list.append(f'{ingridient} - {value[0]}, {value[1]}\n')
+            shopping_list.append(f'{ingridient} - {value[0]} {value[1]}\n')
         response = HttpResponse(
             shopping_list, 'Content-Type: text/plain; charset=utf-8', )
         response['Content-Disposition'] = (
