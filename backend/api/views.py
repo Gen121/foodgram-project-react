@@ -61,7 +61,7 @@ class CustomUserViewSet(UserViewSet):
                 Follow.objects.create(user=request.user, author=author),
                 context={'request': request}, )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             Follow.objects.filter(
                 user=request.user,
                 author=author).delete()
