@@ -121,7 +121,7 @@ class RecipePostSerializer(RecipeGetSerializer):
             raise ValidationError(
                 'Количество ингредиента не может быть равно 0')
         for ingridient in ingridients:
-            if ingridient['amount'] == 0:
+            if ingridient['amount'] < 0:
                 raise ValidationError(
                     'Количество ингредиента не может быть равно 0')
         return data
