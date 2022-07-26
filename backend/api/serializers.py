@@ -119,11 +119,13 @@ class RecipePostSerializer(RecipeGetSerializer):
                 'Ингредиенты не могут повторяться в рецепте')
         if ingridients is None:
             raise ValidationError(
-                'Количество ингредиента не может быть равно 0')
+                'Количество ингредиента не может быть меньше 0')
         for ingridient in ingridients:
             if ingridient['amount'] < 0:
                 raise ValidationError(
                     'Количество ингредиента не может быть равно 0')
+        if data['cooking_time'] < 0:
+            raise ValidationError('Время приготовления не может быть меньше 0')
         return data
 
     def create_ingredients_in_recipe(self, recipe, ingredients):
