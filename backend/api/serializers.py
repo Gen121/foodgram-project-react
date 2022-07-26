@@ -34,26 +34,20 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', )
 
 
-class IngredientInRecipeGetSerializer(serializers.ModelSerializer):
+class IngredientInRecipeSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all(),
+        source='ingredient.id', )
     name = serializers.CharField(
         source='ingredient.name',
-        required=False, )
+        read_only=True, )
     measurement_unit = serializers.CharField(
         source='ingredient.measurement_unit',
-        required=False, )
+        read_only=True, )
 
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount', )
-
-
-class IngredientInRecipePostSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
-
-    class Meta:
-        model = IngredientInRecipe
-        fields = ('id', 'amount', )
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
@@ -70,7 +64,7 @@ class RecipeShortSerializer(serializers.ModelSerializer):
 class RecipeGetSerializer(RecipeShortSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
-    ingredients = IngredientInRecipeGetSerializer(many=True, read_only=True, )
+    ingredients = IngredientInRecipeSerializer(many=True, read_only=True, )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -99,7 +93,7 @@ class RecipePostSerializer(RecipeGetSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tag.objects.all(), )
-    ingredients = IngredientInRecipePostSerializer(many=True)
+    ingredients = IngredientInRecipeSerializer(many=True)
 
     class Meta:
         model = Recipe
@@ -112,9 +106,10 @@ class RecipePostSerializer(RecipeGetSerializer):
     def validate(self, data):
         if data['name'] == '':
             raise ValidationError('Название рецепта не может быть пустым')
-        ingridients = data['ingredients']
-        unique_ingridients = set([ingrid['id'] for ingrid in ingridients])
-        if len(unique_ingridients) != len(ingridients):
+        ingridients = data.get('ingredients')
+        unique_ingridients_id = set(
+            ingrid.get('ingredient').get('id') for ingrid in ingridients)
+        if len(unique_ingridients_id) != len(ingridients):
             raise ValidationError(
                 'Ингредиенты не могут повторяться в рецепте')
         if ingridients is None:
@@ -131,7 +126,7 @@ class RecipePostSerializer(RecipeGetSerializer):
     def create_ingredients_in_recipe(self, recipe, ingredients):
         IngredientInRecipe.objects.bulk_create([IngredientInRecipe(
             recipe=recipe,
-            ingredient=ingredient['id'],
+            ingredient=ingredient.get('ingredient').get('id'),
             amount=ingredient['amount'], ) for ingredient in ingredients])
 
     def create(self, validated_data):
