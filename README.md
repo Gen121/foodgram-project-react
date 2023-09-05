@@ -24,7 +24,7 @@ Python 3.7, Django 2.2, DRF, Docker, Docker-compose, Djoser, NGINX, PostgreSQL, 
 
 
 ### Шаблон наполнения env-файла
-
+Файл должен располагаться в директории foodgram-project-react/infra 
 ```
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
